@@ -1,8 +1,18 @@
-# Container image that runs your code
-FROM alpine:3.10
+# Set the base image to use for subsequent instructions
+FROM alpine:3.23
 
-# Copies your code file from your action repository to the filesystem path `/` of the container
-COPY entrypoint.sh /entrypoint.sh
+# Set the working directory inside the container
+WORKDIR /usr/src
 
-# Code file to execute when the docker container starts up (`entrypoint.sh`)
-ENTRYPOINT ["/entrypoint.sh"]
+# Copy any source file(s) required for the action
+COPY entrypoint.sh .
+
+# Create a non-root user and switch to it
+RUN addgroup -S actiongroup && adduser -S actionuser -G actiongroup && \
+    chown -R actionuser:actiongroup /usr/src && \
+    chmod +x /usr/src/entrypoint.sh
+
+USER actionuser
+
+# Configure the container to be run as an executable
+ENTRYPOINT ["/usr/src/entrypoint.sh"]
