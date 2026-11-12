@@ -10,7 +10,7 @@ COPY entrypoint.sh .
 # Create a non-root user and switch to it
 RUN addgroup -S actiongroup && adduser -S actionuser -G actiongroup && \
     chown -R actionuser:actiongroup /usr/src && \
-    chmod +x /usr/src/entrypoint.sh
+    chmod +x /usr/src/entrypoint.sh && chown -R actionuser:actiongroup /github/file_commands
 
 USER actionuser
 
